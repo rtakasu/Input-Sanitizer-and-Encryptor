@@ -11,10 +11,49 @@ int main(int argc, char*argv[])
 		if (myfile.is_open())
 		{
 			while( getline(myfile,line))
-			{
-				cout<<"Executing command: "<<line;
-				int j=system(line.c_str());
-				cout<<"The value was: "<<j;
+			{ 
+				istringstream iss(line);
+				string arr[3];
+				int i=0;
+				while(iss.good() && i <3){
+					iss>>arr[i];
+					++i;
+				}
+				string command;
+				command = arr[0];
+
+				string keyfile = "key.key";
+
+				if(command.compare("encrypt") == 0)
+				{
+					cout<<"encrypt\n";
+					string in_file = arr[1];
+					string out_file = arr[2];
+					encrypt(in_file,out_file, keyfile);
+				}
+				else if (command.compare("decrypt") == 0)
+				{
+					cout<<"decrypt\n";
+					string in_file = arr[1];
+					string out_file = arr[2];
+					decrypt(in_file,out_file,keyfile);
+				}
+				else if (command.compare("password") == 0)
+				{
+					cout<<"password\n";
+				}
+				else if (command.compare("keyfile") == 0)
+				{
+					cout<<"keyfile\n";
+				}
+				else
+					cout<<command<<" is not a valid command\n";	
+				
+				//cout<<"Executing command: "<<line;
+				
+				
+				//int j=system(line.c_str());
+				//cout<<"The value was: "<<j;
 				//cout << line << "\n";
 			}
 			myfile.close();
@@ -26,16 +65,16 @@ int main(int argc, char*argv[])
 	}
 	string pwd = "pa";
 	string key = "key.key";
-	generate_keyfile(pwd, key);
+	//generate_keyfile(pwd, key);
 	
 	string in = "test.txt";
 	string out = "out.txt";
 	string keyfile = "key.key";
-	encrypt(in,out,keyfile);
+	//encrypt(in,out,keyfile);
 
 	string in2 = "out.txt";
 	string out2 = "decrypted.txt";
-	decrypt(in2,out2,keyfile);
+	//decrypt(in2,out2,keyfile);
 			
 	return 0;
 }

@@ -1,2 +1,2 @@
-echo hey
+encrypt test.txt a.txt
 openssl enc -aes-128-cbc -e -in test.txt -out enc_file

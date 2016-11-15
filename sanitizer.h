@@ -9,6 +9,7 @@
 #include <string.h>
 #include <iomanip>
 #include <boost/format.hpp>
+#include <sstream>
 
 #include <openssl/evp.h>
 
