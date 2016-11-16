@@ -1,0 +1,4 @@
+password Secret s.keyf
+keyfile s.keyf
+encrypt input.txt encrypted.txt
+decrypt encrypted.txt output.txt

@@ -1,3 +1,0 @@
-password Secret s.keyf
-encrypt test.txt a.txt
-decrypt a.txt b.txt

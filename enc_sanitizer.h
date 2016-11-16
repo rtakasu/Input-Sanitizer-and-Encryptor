@@ -19,9 +19,9 @@ int checking_command(vector<string>& command_array);
 
 bool valid_argument(string& argument);
 
-bool is_alpha_numeric(char letter);
-
 bool is_whitespace(char letter);
+
+bool is_escape_char(char letter);
 
 int generate_keyfile(string& password, string& output_file);
 

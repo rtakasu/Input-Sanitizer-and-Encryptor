@@ -1,20 +1,11 @@
-#include "sanitizer.h"
+#include "enc_sanitizer.h"
 
 int main(int argc, char*argv[])
 {
-	for (int i=1; i<argc; i++)
-	{
-		string line;	
-		ifstream myfile;
-		myfile.open(argv[i]);
-	
-		if (myfile.is_open())
-		{
-			
-			string keyfile;	
-
-			while( getline(myfile,line))
-			{ 
+	if (argc == 1) {
+		string keyfile;
+		while (true) {	
+			for (string line; getline(cin, line);){
 				vector<string> command_array(0);
 
 				istringstream iss(line);
@@ -43,12 +34,56 @@ int main(int argc, char*argv[])
 				else if (command == 4) {
 					keyfile = command_array[1];
 				}
+
 			}
-			myfile.close();
 		}
-		else cout << "Unable to open file\n";
-		myfile.close();
+	}
+	else {
+		for (int i=1; i<argc; i++) {
+			string line;	
+			ifstream myfile;
+			myfile.open(argv[i]);
 		
+			if (myfile.is_open()) {
+				
+				string keyfile;	
+
+				while( getline(myfile,line)) { 
+					vector<string> command_array(0);
+
+					istringstream iss(line);
+
+					int i=0;
+					while(iss.good()) {
+						string temp;
+						iss>>temp;
+						command_array.push_back(temp);	
+					}
+
+					int command = checking_command(command_array);
+					
+					if (command == 0) {
+						cout<<line<<": is an invalid command\n";	
+					}
+					else if (command == 1) {
+						encrypt(command_array[1], command_array[2], keyfile);	
+					}
+					else if (command == 2) {
+						decrypt(command_array[1], command_array[2], keyfile);	
+					}
+					else if (command == 3) {
+						generate_keyfile(command_array[1], command_array[2]);	
+					}
+					else if (command == 4) {
+						keyfile = command_array[1];
+					}
+				}
+				myfile.close();
+			}
+			else cout << "Unable to open file\n";
+			myfile.close();
+			
+		}
 	}				
 	return 0;
 }
@@ -82,43 +117,49 @@ int checking_command(vector<string>& command_array) {
 }
 
 bool valid_argument(string& argument){
+	// Checks if a given argument is according to the specifications 
 	bool valid = true;
+
+	vector<char> arg(0); 	
+
 	for (char& c:argument) {
-		if (is_whitespace(c)) {
-			valid = false;	
-			cout<<c<<"\n";
+		arg.push_back(c);
+	}
+	
+	if ((arg[0] == '\'' && arg.back() == '\'') || (arg[0] == '"' && arg.back() == '"')) {
+		for (int i=1;i<arg.size()-1;i++) {
+			if (arg[i] == '\'' && arg[i-1] != '\\') {
+				valid = false;
+			}
+			else if (arg[i] == '\\' && arg[i-1] != '\\') {
+				valid = false;
+			}	
+		}
+	}
+	else {
+		for (char& c:arg) {
+			if (is_whitespace(c)) {
+				valid = false;
+			} 
+			else if (is_escape_char(c)) {
+				valid = false;
+			}
 		}
 	}	
-
 	return valid;
-}
-
-bool is_alpha_numeric(char letter) {
-	return 	((letter >= '0' && letter <= '9') || 
-		(letter >= 'A' && letter <= 'Z') ||
-		(letter >= 'a' && letter <= 'z') || 
-		(letter == 131) ||  					// ƒ
-		(letter == 138) ||                       		// Š
-		(letter == 140) ||                                      // Œ
-		(letter == 142) ||                                      // Ž
-		(letter == 154) ||                                      // š
-		(letter == 156) ||                                      // œ
-		(letter == 158) ||                                      // ž
-		(letter == 159) ||                                      // Ÿ
-		(letter == 170) ||                                      // ª
-		(letter == 178) ||                                      // ²
-		(letter == 179) ||                                      // ³
-		(letter == 185) ||                                      // ¹
-		(letter == 186) ||                                      // º
-		(letter >= 192 && letter <= 214) ||			// À - Ö 
-		(letter >= 216 && letter <= 246) ||			// Ø - ö
-		(letter >= 248 && letter <= 255)); 			// ø - ÿ	
 }
 
 bool is_whitespace(char letter) {
 	return ((letter == ' ') ||
 		(letter == '\t'));
 }
+
+bool is_escape_char(char letter) {
+	return ((letter == '\n') ||
+		(letter == '\r') ||
+		(letter == '\t'));
+}
+
 
 int generate_keyfile(string& password, string& output_file)
 {

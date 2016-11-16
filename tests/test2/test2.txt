@@ -1,0 +1,2 @@
+keyfile s.keyf
+encrypt input.txt encrypted.txt
