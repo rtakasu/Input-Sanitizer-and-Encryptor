@@ -8,12 +8,20 @@
 #include <string>
 #include <string.h>
 #include <iomanip>
-#include <boost/format.hpp>
 #include <sstream>
+#include <vector>
 
 #include <openssl/evp.h>
 
 using namespace std;
+
+int checking_command(vector<string>& command_array);
+
+bool valid_argument(string& argument);
+
+bool is_alpha_numeric(char letter);
+
+bool is_whitespace(char letter);
 
 int generate_keyfile(string& password, string& output_file);
 

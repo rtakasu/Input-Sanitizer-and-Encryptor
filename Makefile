@@ -2,13 +2,18 @@ CC=g++
 LDLIBS=-lm -lcrypto
 CXXFLAGS=-g --std=c++0x
 
-OBJ=sanitizer.o
+OBJ=enc_sanitizer.o
 
-build: sanitizer
+build: rgt2108.2
 
-sanitizer: $(OBJ)
+rgt2108.2: $(OBJ)
 	$(CC) $(CXXFLAGS) -o $@ $(OBJ) -lcrypto
+
+test: build
+
+exec: build
+	./rgt2108.2 $(ARGS)
 
 .PHONY: clean
 clean:
-	rm -rf sanitizer *.o *.core
+	rm -rf rgt2108.2 *.o *.core
